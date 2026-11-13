@@ -51,8 +51,8 @@ def skill_files(directory: Path) -> Iterator[Path]:
             yield path
 
 
-def payload() -> dict[Path, bytes]:
-    """Load preserved payload, adapting only installed agent dispatch IDs."""
+def payload() -> dict[Path, tuple[Path, bytes]]:
+    """Load source paths and bytes, adapting installed agent dispatch IDs."""
     files = {}
     for role in ROLES:
         source = ROOT / "agents" / f"{role}.agent.md"
@@ -63,11 +63,14 @@ def payload() -> dict[Path, bytes]:
                 f"sleuthbots:{target}".encode(),
                 f"sleuthbots-{target}".encode(),
             )
-        files[Path("agents") / f"sleuthbots-{role}.agent.md"] = content
+        files[Path("agents") / f"sleuthbots-{role}.agent.md"] = (
+            source,
+            content,
+        )
 
     common = ROOT / "skills" / "sleuth_common.py"
     check_path(common)
-    files[common.relative_to(ROOT)] = common.read_bytes()
+    files[common.relative_to(ROOT)] = (common, common.read_bytes())
     for name in SKILLS:
         directory = ROOT / "skills" / name
         # Required entry points must exist even if a checkout is incomplete.
@@ -77,7 +80,7 @@ def payload() -> dict[Path, bytes]:
             if not required.is_file():
                 raise ValueError(f"Missing skill entry point: {required}")
         for source in skill_files(directory):
-            files[source.relative_to(ROOT)] = source.read_bytes()
+            files[source.relative_to(ROOT)] = (source, source.read_bytes())
     return files
 
 
@@ -90,7 +93,7 @@ def install(destination: Path, overwrite: bool = False) -> tuple[int, int]:
     files = payload()
     pending = []
     unchanged = 0
-    for relative, content in files.items():
+    for relative, (source, content) in files.items():
         target = destination / relative
         check_path(target)
         if target.is_file():
@@ -101,28 +104,29 @@ def install(destination: Path, overwrite: bool = False) -> tuple[int, int]:
                 raise ValueError(
                     f"Conflict: {target}; use --overwrite to replace this file."
                 )
-        pending.append((target, content))
+        pending.append((source, target, content))
 
-    for target, content in pending:
+    for source, target, content in pending:
         target.parent.mkdir(parents=True, exist_ok=True)
         check_path(target)
         if not overwrite:
             # Exclusive creation also protects files created after preflight.
             with target.open("xb") as stream:
                 stream.write(content)
-            continue
-        # Replace only this file, without truncating existing contents on error.
-        temporary = None
-        try:
-            with tempfile.NamedTemporaryFile(
-                dir=target.parent, delete=False
-            ) as stream:
-                temporary = Path(stream.name)
-                stream.write(content)
-            os.replace(temporary, target)
-        finally:
-            if temporary is not None:
-                temporary.unlink(missing_ok=True)
+        else:
+            # Replace this file without truncating existing contents on error.
+            temporary = None
+            try:
+                with tempfile.NamedTemporaryFile(
+                    dir=target.parent, delete=False
+                ) as stream:
+                    temporary = Path(stream.name)
+                    stream.write(content)
+                os.replace(temporary, target)
+            finally:
+                if temporary is not None:
+                    temporary.unlink(missing_ok=True)
+        print(f"Copied: {source} -> {target}")
     return len(pending), unchanged
 
 

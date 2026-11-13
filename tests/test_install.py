@@ -44,12 +44,33 @@ class TestInstall(unittest.TestCase):
             check=False,
         )
         self.assertEqual(result.returncode, code, result.stdout + result.stderr)
+        if code:
+            self.assertNotIn("Copied:", result.stdout)
         return result
 
     def test_native_discovery_and_installed_cli_workflow(self) -> None:
         """Discover profiles, resolve links, and run installed scripts."""
         self.assertIn("--overwrite", self.run_install("--help").stdout)
-        self.run_install()
+        result = self.run_install()
+        expected = []
+        for target in self.destination.rglob("*"):
+            if not target.is_file():
+                continue
+            relative = target.relative_to(self.destination)
+            source = ROOT / relative
+            if relative.parts[0] == "agents":
+                source = (
+                    ROOT / "agents" / target.name.removeprefix("sleuthbots-")
+                )
+            expected.append(f"Copied: {source} -> {target}")
+        self.assertCountEqual(
+            [
+                line
+                for line in result.stdout.splitlines()
+                if line.startswith("Copied:")
+            ],
+            expected,
+        )
         agents = self.destination / "agents"
         self.assertEqual(
             {path.name for path in agents.iterdir()},
@@ -123,7 +144,10 @@ class TestInstall(unittest.TestCase):
         target = self.destination / "agents/sleuthbots-coordinator.agent.md"
         original = target.read_bytes()
         before = target.stat().st_mtime_ns
-        self.assertIn("0 copied, 12 unchanged", self.run_install().stdout)
+        for args in ((), ("--overwrite",)):
+            result = self.run_install(*args)
+            self.assertIn("0 copied, 12 unchanged", result.stdout)
+            self.assertNotIn("Copied:", result.stdout)
         self.assertEqual(target.stat().st_mtime_ns, before)
         unrelated = self.destination / "skills/keep.txt"
         unrelated.write_text("keep", encoding="utf-8")
@@ -133,7 +157,14 @@ class TestInstall(unittest.TestCase):
         self.assertIn("Conflict:", self.run_install(code=1).stderr)
         self.assertEqual(target.read_text(encoding="utf-8"), "custom")
         self.assertFalse(missing.exists())
-        self.run_install("--overwrite")
+        result = self.run_install("--overwrite")
+        self.assertEqual(
+            result.stdout.splitlines()[:-1],
+            [
+                f"Copied: {ROOT / 'agents/coordinator.agent.md'} -> {target}",
+                f"Copied: {ROOT / 'skills/sleuth_common.py'} -> {missing}",
+            ],
+        )
         self.assertEqual(target.read_bytes(), original)
         self.assertEqual(unrelated.read_text(encoding="utf-8"), "keep")
 
