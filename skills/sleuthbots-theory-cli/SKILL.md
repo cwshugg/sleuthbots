@@ -1,14 +1,14 @@
 ---
-name: sleuth-theory-cli
+name: sleuthbots-theory-cli
 description: "Manage causal hypotheses, ordinary evidence discussions, Scully-gated final decisions, and justified reopening."
 ---
 
 # Sleuthbots theory CLI
 
-Invoke installed `sleuth-theory-cli.py` next to this manual using Python 3.10+: `python3` on Linux, normally `py -3` on Windows.
+Invoke installed `sleuthbots-theory-cli.py` next to this manual using Python 3.10+: `python3` on Linux, normally `py -3` on Windows.
 Resolve executable relative to installation, not cwd.
 Global `--workspace-path PATH` and `--json` precede the subcommand; default is current cwd `.sleuthbots`.
-Explicit path names the workspace itself; require prior [initialization](../sleuth-workspace-cli/SKILL.md).
+Explicit path names the workspace itself; require prior [initialization](../sleuthbots-workspace-cli/SKILL.md).
 Every command requires full `--case-id CASE_ID`; record-specific commands also require full `--id THEORY_ID`.
 IDs are random 16-character lowercase hexadecimal values.
 
@@ -55,9 +55,9 @@ Author labels are not authentication.
 * Direct final-to-final transitions, independent conclusion edits, and unknown-to-unknown verdict changes fail.
 
 ```bash
-python3 /installed/sleuthbots/skills/sleuth-theory-cli/sleuth-theory-cli.py create --case-id 0123456789abcdef --title "Expired entry bypasses refresh"
-python3 /installed/sleuthbots/skills/sleuth-theory-cli/sleuth-theory-cli.py add-discussion --case-id 0123456789abcdef --id fedcba9876543210 --author Scully --stdin
-python3 /installed/sleuthbots/skills/sleuth-theory-cli/sleuth-theory-cli.py update --case-id 0123456789abcdef --id fedcba9876543210 --author Skinner --verdict accepted --conclusion "Expired-entry branch caused the covered failures." --reason "Scully agrees based on failing/successful trace comparison in discussion."
+python3 /installed/sleuthbots/skills/sleuthbots-theory-cli/sleuthbots-theory-cli.py create --case-id 0123456789abcdef --title "Expired entry bypasses refresh"
+python3 /installed/sleuthbots/skills/sleuthbots-theory-cli/sleuthbots-theory-cli.py add-discussion --case-id 0123456789abcdef --id fedcba9876543210 --author Scully --stdin
+python3 /installed/sleuthbots/skills/sleuthbots-theory-cli/sleuthbots-theory-cli.py update --case-id 0123456789abcdef --id fedcba9876543210 --author Skinner --verdict accepted --conclusion "Expired-entry branch caused the covered failures." --reason "Scully agrees based on failing/successful trace comparison in discussion."
 ```
 
 Replace example IDs with returned IDs; stdin examples wait for your input until EOF.

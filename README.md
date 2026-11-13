@@ -1,6 +1,6 @@
 # Sleuthbots
 
-Sleuthbots provides a team of agents whose job is to investigate the unknown and debate theories until a **winning theory** is agreed upon that explains the root cause of a problem.
+Sleuthbots is a team of agents whose job is to investigate the unknown and debate theories until a **winning theory** is agreed upon that explains the root cause of a problem.
 They are primarily intended for use in debugging/investigative situations, such as:
 
 * Debugging code
@@ -53,18 +53,23 @@ flowchart TD
 ## Using Sleuthbots
 
 ```bash
-python3 install.py
+# Run the unit tests
 python3 -m unittest discover -s tests
+
+# Install the agents and skills to your local `~/.copilot`
+python3 install.py
+
+# Install somewhere else
+python3 install.py --destination "./path/to/your/custom/location"
 ```
 
-The installer replaces differing bundled files by default and leaves identical files untouched.
-Use `python3 install.py --no-overwrite` to fail on differing existing files instead.
+Use `python3 install.py --no-overwrite` to avoid overwriting already-installed files.
 
 Type `/agent` and select `[Sleuthbots::Coordinator] Skinner`.
 Then, offer up a problem to investigate (an IcM, a bug in your code, etc.).
 Skinner will dispatch the Theorist and the Skeptic to investigate.
 
-## Working Directory
+## Agents Track Their Work
 
 The tools provided to the sleuthbot agents allow them to create a `.sleuthbots/` working directory.
 This directory is used to create **case files** and **theory files**.

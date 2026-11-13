@@ -34,8 +34,8 @@ class TestCli(unittest.TestCase):
             str(
                 PLUGIN
                 / "skills"
-                / f"sleuth-{kind}-cli"
-                / f"sleuth-{kind}-cli.py"
+                / f"sleuthbots-{kind}-cli"
+                / f"sleuthbots-{kind}-cli.py"
             ),
             "--workspace-path",
             str(self.workspace),

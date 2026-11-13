@@ -11,9 +11,9 @@ Their registered agent types are `sleuthbots:skeptic` and `sleuthbots:coordinato
 
 Please read up on these skills:
 
-* [Sleuthbots Workspace CLI](../skills/sleuth-workspace-cli/SKILL.md)
-* [Sleuthbots Case CLI](../skills/sleuth-case-cli/SKILL.md)
-* [Sleuthbots Theory CLI](../skills/sleuth-theory-cli/SKILL.md)
+* [Sleuthbots Workspace CLI](../skills/sleuthbots-workspace-cli/SKILL.md)
+* [Sleuthbots Case CLI](../skills/sleuthbots-case-cli/SKILL.md)
+* [Sleuthbots Theory CLI](../skills/sleuthbots-theory-cli/SKILL.md)
 
 Use the `.sleuthbots/` workspace directory and case/theory IDs; read current claims, discussions, and checkpoints before investigating.
 

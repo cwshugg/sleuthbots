@@ -12,7 +12,11 @@ from pathlib import Path
 # These names define the bundled agents and their sibling skill directories.
 ROOT = Path(__file__).absolute().parent
 ROLES = ("coordinator", "skeptic", "theorist")
-SKILLS = ("sleuth-workspace-cli", "sleuth-case-cli", "sleuth-theory-cli")
+SKILLS = (
+    "sleuthbots-workspace-cli",
+    "sleuthbots-case-cli",
+    "sleuthbots-theory-cli",
+)
 
 
 def check_path(path: Path, directory: bool = False) -> None:

@@ -13,7 +13,11 @@ from pathlib import Path
 # The installer is always invoked as a user would, outside the source checkout.
 ROOT = Path(__file__).resolve().parents[1]
 ROLES = ("coordinator", "skeptic", "theorist")
-SKILLS = ("sleuth-workspace-cli", "sleuth-case-cli", "sleuth-theory-cli")
+SKILLS = (
+    "sleuthbots-workspace-cli",
+    "sleuthbots-case-cli",
+    "sleuthbots-theory-cli",
+)
 
 
 class TestInstall(unittest.TestCase):
@@ -84,9 +88,13 @@ class TestInstall(unittest.TestCase):
             self.assertNotIn("sleuthbots:", text)
             for link in re.findall(r"\]\(([^)]+)\)", text):
                 self.assertTrue((path.parent / link).is_file(), link)
-            for agent in re.findall(r"sleuthbots-[a-z]+", text):
+            for agent in re.findall(r"sleuthbots-[a-z]+(?![a-z-])", text):
                 self.assertTrue((agents / f"{agent}.agent.md").is_file())
         skills = self.destination / "skills"
+        self.assertEqual(
+            {path.name for path in skills.iterdir() if path.is_dir()},
+            set(SKILLS),
+        )
         for name in SKILLS:
             text = (skills / name / "SKILL.md").read_text(encoding="utf-8")
             self.assertIn(f"name: {name}\n", text)
@@ -97,7 +105,7 @@ class TestInstall(unittest.TestCase):
             self.assertTrue(
                 (
                     skills
-                    / f"sleuth-{template}-cli"
+                    / f"sleuthbots-{template}-cli"
                     / f"template.{template}.md"
                 ).is_file()
             )
@@ -109,7 +117,9 @@ class TestInstall(unittest.TestCase):
                 [
                     sys.executable,
                     str(
-                        skills / f"sleuth-{kind}-cli" / f"sleuth-{kind}-cli.py"
+                        skills
+                        / f"sleuthbots-{kind}-cli"
+                        / f"sleuthbots-{kind}-cli.py"
                     ),
                     "--json",
                     *args,

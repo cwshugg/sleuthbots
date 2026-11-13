@@ -1,15 +1,15 @@
 ---
-name: sleuth-case-cli
+name: sleuthbots-case-cli
 description: "Create, read, filter, checkpoint, and discuss local Sleuthbots cases with computed acceptance and lifecycle."
 ---
 
 # Sleuthbots case CLI
 
-Invoke installed `sleuth-case-cli.py` next to this manual using Python 3.10+: `python3` on Linux, normally `py -3` on Windows.
+Invoke installed `sleuthbots-case-cli.py` next to this manual using Python 3.10+: `python3` on Linux, normally `py -3` on Windows.
 Find executable paths relative to the installed plugin, not the investigation cwd.
 Global `--workspace-path PATH` and `--json` precede the subcommand.
 Default is cwd `.sleuthbots`; explicit path names the workspace itself.
-Require prior [workspace initialization](../sleuth-workspace-cli/SKILL.md).
+Require prior [workspace initialization](../sleuthbots-workspace-cli/SKILL.md).
 Use full 16-character lowercase hexadecimal IDs from create.
 
 ## Commands
@@ -46,8 +46,8 @@ Close existing fences before a subsequent append so its managed heading remains 
 On uncertain completion, reread before retrying; there is no deduplication/revision flag.
 
 ```bash
-python3 /installed/sleuthbots/skills/sleuth-case-cli/sleuth-case-cli.py --json create --title "Warm-cache failures" --description "Requests fail only after cache warm-up."
-python3 /installed/sleuthbots/skills/sleuth-case-cli/sleuth-case-cli.py update --id 0123456789abcdef --author Skinner --rounds-completed 1 --summary "Comparison needed." --reason "Round 1 complete; Scully needs a successful-request comparison."
+python3 /installed/sleuthbots/skills/sleuthbots-case-cli/sleuthbots-case-cli.py --json create --title "Warm-cache failures" --description "Requests fail only after cache warm-up."
+python3 /installed/sleuthbots/skills/sleuthbots-case-cli/sleuthbots-case-cli.py update --id 0123456789abcdef --author Skinner --rounds-completed 1 --summary "Comparison needed." --reason "Round 1 complete; Scully needs a successful-request comparison."
 ```
 
 ## Lifecycle and budget
@@ -58,7 +58,7 @@ Resolved means supported root cause, **not a deployed fix**.
 Multiple accepted causes are allowed; unknown follow-ups do not invalidate them.
 Open/blocked updates are rejected while accepted theories remain; resolved requires at least one.
 `--state blocked` requires a nonempty reason for missing essential evidence/access; `--state open` clears it.
-Before accepting a theory in a blocked case, explicitly open with justification, then finalize through the [theory CLI](../sleuth-theory-cli/SKILL.md).
+Before accepting a theory in a blocked case, explicitly open with justification, then finalize through the [theory CLI](../sleuthbots-theory-cli/SKILL.md).
 Accepted theories plus a hand-edited blocked reason are contradictory and fail for explicit paused human correction.
 
 Case creation copies the configured workspace default (15 for new workspaces) or explicit positive override.
