@@ -26,6 +26,30 @@ The agents themselves are instructed to use other tools at their disposal, so ma
 The installed agent types are `sleuthbots-theorist`, `sleuthbots-skeptic`, and `sleuthbots-coordinator`.
 Use these identifiers for subagent dispatch, not the nicknames or frontmatter display names.
 
+```mermaid
+flowchart TD
+    human["🧑 Human"]
+    human --> |Talks to| bot_coordinator
+
+    bot_coordinator["🤖 Coordinator 'Skinner'"]
+    bot_coordinator --> |Manages case| case
+
+    case["💼 Case"]
+
+    bot_theorist["🤖 Theorist 'Mulder'"]
+    bot_theorist <--> |Investigates/updates| case
+    bot_theorist --> |🔦 Brainstorms theories| theory
+
+    theory["📃 Theory"]
+
+    bot_skeptic["🤖 Skeptic 'Scully'"]
+    bot_skeptic <--> |Investigates/updates| case
+    bot_skeptic --> |❌ Works to debunk theories| theory
+
+    case ~~~ bot_theorist
+    case ~~~ bot_skeptic
+```
+
 ## Using Sleuthbots
 
 ```bash
