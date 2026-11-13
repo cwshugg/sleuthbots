@@ -1,0 +1,12 @@
+# Build/run artifacts
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+dist/
+build/
+
+# Vim swap files
+.*.swp
+.*.swn
+.*.swo

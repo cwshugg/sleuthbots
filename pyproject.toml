@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sleuthbots"
+version = "0.1.0"
+description = "An MCP server providing a team of investigative agents."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["fastmcp>=2.14,<3"]
+
+[project.optional-dependencies]
+dev = ["ruff>=0.11,<1"]
+
+[project.scripts]
+sleuthbots = "sleuthbots.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sleuthbots"]
+
+[tool.hatch.build]
+exclude = ["**/__pycache__/**", "**/*.pyc"]
+
+[tool.ruff]
+line-length = 80
+target-version = "py311"
+extend-exclude = ["src/sleuthbots/content"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
