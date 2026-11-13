@@ -17,9 +17,9 @@ The agents themselves are instructed to use other tools at their disposal, so ma
 
 ## The Team
 
-* 🔎 [The Theorist](./agents/theorist.agent.md) ("Mulder") - Proposes theories to explain the root cause of a problem.
-* 🔬 [The Skeptic](./agents/skeptic.agent.md) ("Scully") - Seeks to disprove the Theorist's theories with evidence.
-* 💼 [The Coordinator](./agents/coordinator.agent.md) ("Skinner") - Directs the Theorist and the Skeptic in a loop of investigation until a **winning theory** is chosen.
+* 🔎 [The Theorist](./agents/theorist.agent.md) ("**Mulder**") - Proposes theories to explain the root cause of a problem.
+* 🔬 [The Skeptic](./agents/skeptic.agent.md) ("**Scully**") - Seeks to disprove the Theorist's theories with evidence.
+* 💼 [The Coordinator](./agents/coordinator.agent.md) ("**Skinner**") - Directs the Theorist and the Skeptic in a loop of investigation until a **winning theory** is chosen.
 
 (*Where did these names come from?* Check out [The X-Files](https://en.wikipedia.org/wiki/The_X-Files))
 
