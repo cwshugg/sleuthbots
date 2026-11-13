@@ -4,7 +4,7 @@ Sleuthbots provides a team of agents whose job is to investigate the unknown and
 They are primarily intended for use in debugging/investigative situations, such as:
 
 * Debugging code
-* Investigating tickets
+* Investigating incidents (IcM)
 
 It requires Python 3.10+ on Windows or Linux.
 
@@ -17,53 +17,30 @@ The agents themselves are instructed to use other tools at their disposal, so ma
 
 ## The Team
 
-* 🔎 [The Theorist](./agents/theorist.agent.md) ("**Mulder**") (`sleuthbots:theorist`) - Proposes theories to explain the root cause of a problem.
-* 🔬 [The Skeptic](./agents/skeptic.agent.md) ("**Scully**") (`sleuthbots:skeptic`) - Seeks to disprove the Theorist's theories with evidence.
-* 💼 [The Coordinator](./agents/coordinator.agent.md) ("**Skinner**") (`sleuthbots:coordinator`) - Directs the Theorist and the Skeptic in a loop of investigation until a **winning theory** is chosen.
+* 🔎 [The Theorist](./agents/theorist.agent.md) ("Mulder") - Proposes theories to explain the root cause of a problem.
+* 🔬 [The Skeptic](./agents/skeptic.agent.md) ("Scully") - Seeks to disprove the Theorist's theories with evidence.
+* 💼 [The Coordinator](./agents/coordinator.agent.md) ("Skinner") - Directs the Theorist and the Skeptic in a loop of investigation until a **winning theory** is chosen.
 
 (*Where did these names come from?* Check out [The X-Files](https://en.wikipedia.org/wiki/The_X-Files))
 
+The installed agent types are `sleuthbots-theorist`, `sleuthbots-skeptic`, and `sleuthbots-coordinator`.
+Use these identifiers for subagent dispatch, not the nicknames or frontmatter display names.
+
 ## Using Sleuthbots
 
-### Running the MCP Server
-
 ```bash
-# Run the unit tests
-.venv/bin/python -m unittest discover -s tests
-
-# Install the MCP server into a virtual environment
-python3 -m venv .venv && .venv/bin/python -m pip install -e '.[dev]'
-
-# Run the MCP server from within the virtual environment
-.venv/bin/sleuthbots
+python3 install.py
+python3 -m unittest discover -s tests
 ```
 
-### Configuring the MCP Server
-
-Add this entry to `~/.copilot/mcp-config.json`:
-
-```json
-{
-    "mcpServers": {
-        "sleuthbots": {
-            "command": "/path/to/your/local/sleuthbots/.venv/bin/sleuthbots",
-            "args": []
-        }
-    }
-}
-```
-
-### Using the Sleuthbots Agents
-
-Once you've initialized the MCP server in your AI coding tool (Copilot CLI, Claude Code, etc.), you should be able to type `/agent` to select `[Sleuthbots::Coordinator] Skinner` (or however your tool selects agents).
-
-Then, offer up a problem to investigate (a bug in your code, etc.).
+Type `/agent` and select `[Sleuthbots::Coordinator] Skinner`.
+Then, offer up a problem to investigate (an IcM, a bug in your code, etc.).
 Skinner will dispatch the Theorist and the Skeptic to investigate.
 
-## Tracking Work
+## Working Directory
 
-The Sleuthbots agents track their own work within a `.sleuthbots/` working directory.
-They use this directory to create and manage **case files** and **theory files**.
+The tools provided to the sleuthbot agents allow them to create a `.sleuthbots/` working directory.
+This directory is used to create **case files** and **theory files**.
 
 * A **case** is a single mystery that is under investigation.
     * Each case can have several theories that are discussed until a **winning theory** is decided on.
@@ -94,7 +71,7 @@ A working directory used by the sleuthbots may look something like this througho
 ### Case Files
 
 Files ending with `*.case.md` describe cases investigated by the sleuthbots.
-A "case" in this scenario is a unique situation you are investigating, such as a specific software bug.
+A "case" in this scenario is a unique situation you are investigating, such as an incident or a specific software bug.
 The Coordinator creates these to give other agents context behind what is investigated.
 Updates on the case's investigation are posted here by the Coordinator.
 
@@ -107,8 +84,8 @@ A case file contains metadata (in the form of JSON) and a discussion that includ
 ---
 {
   "id": "07d5df414444e9ce",
-  "title": "Ticket 123456789 investigation",
-  "description": "Investigate root issue and determine next steps for ticket 123456789.",
+  "title": "IcM 123456789 investigation",
+  "description": "Investigate root issue and determine next steps IcM 123456789.",
   "created_at": "2026-11-09T21:13:50.953120Z",
   "updated_at": "2026-11-09T21:23:53.483130Z",
   "summary": "...",
@@ -118,7 +95,7 @@ A case file contains metadata (in the form of JSON) and a discussion that includ
 }
 ---
 
-# Ticket 123456789 investigation
+# IcM 123456789 investigation
 
 ## Overview
 
@@ -129,7 +106,7 @@ A case file contains metadata (in the form of JSON) and a discussion that includ
 ### 2026-11-09T21:13:57.441965Z — Skinner
 
 Round 1 of 25: no theories selected.
-Mulder will read current ticket and prior analysis, consult required domain knowledge, and collect bounded distinguishing evidence.
+Mulder will read current incident and prior analysis, consult required domain knowledge, and collect bounded distinguishing evidence.
 Scully will separately assess causal claims.
 
 ...
@@ -159,7 +136,7 @@ A theory file contains metadata (in the form of JSON) and a discussion that incl
 {
   "id": "cb028c01bf322ade",
   "title": "Recurring node-local [token-service] token acquisition failure blocks [attestation]",
-  "description": "The November 8 error [error-code] on [hostname] is a continuation of the node-specific authorization-header failure documented in Ticket 123456788; exact inner cause remains unverified.",
+  "description": "The November 8 error [error-code] on [hostname] is a continuation of the node-specific authorization-header failure documented in IcM 123456788; exact inner cause remains unverified.",
   "created_at": "2026-11-09T21:18:44.183398Z",
   "updated_at": "2026-11-09T21:23:27.170299Z",
   "case_id": "07d5df414444e9ce",
@@ -172,7 +149,7 @@ A theory file contains metadata (in the form of JSON) and a discussion that incl
 
 ## Hypothesis
 
-The November 8 error [error-code] on [hostname] is a continuation of the node-specific MISE authorization-header failure documented in ticket 123456788; exact inner cause remains unverified.
+The November 8 error [error-code] on [hostname] is a continuation of the node-specific MISE authorization-header failure documented in IcM 123456788; exact inner cause remains unverified.
 
 ## Discussion
 
@@ -191,7 +168,7 @@ Recommendation: UNKNOWN, not accepted and not disproven.
 
 ...
 
-I explicitly support only the narrow identity statement: both tickets point to the exact same reported hostname, [hostname], in [clustername].
+I explicitly support only the narrow identity statement: both incidents point to the exact same reported hostname, [hostname], in [clustername].
 I do not agree that the complete causal claim is established.
 ```
 
@@ -211,12 +188,11 @@ A Layman's Report will look something like this:
 
 > 🤷 Layman’s Report
 >
-> The VM-to-host mapping is supported by the saved telemetry, but it predates the ticket’s impact start by about ten minutes.
+> The VM-to-host mapping is supported by the saved telemetry, but it predates the incident’s impact start by about ten minutes.
 > It does not prove where the VM is running now.
-> We need timestamped firmware inventory for that machine to establish its BIOS version.
+> We need timestamped firmware inventory for that node to establish its BIOS version; firmware mentioned for another pool cannot substitute.
 >
 > 📚 Sources
 >
-> * [Ticket Link](https://example.com)
-> * File containing queries used to retrieve data: `C:\Users\yourusername\file.md`
-
+> * [Incident Link](https://example.com)
+> * File containing Kusto queries: `C:\Users\yourusername\file.md`

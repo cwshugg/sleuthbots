@@ -69,7 +69,7 @@ The purpose of the Layman's Report is to provide a *brief*, *clear* description 
 * Is worded clearly and in a layman-friendly manner, so that *anyone* could understand it regardless of expertise level.
 
 The Layman's Report should also contain a section titled "Sources".
-The "Sources" section should provide links to documents, email thread names, links, etc., - anything that was used during the investigation that is relevant data the reader will want to see and use as evidence for supporting the decision made by the team of agents.
+The "Sources" section should provide links to documents, email thread names, Kusto query links, etc., - anything that was used during the investigation that is relevant data the reader will want to see and use as evidence for supporting the decision made by the team of agents.
 
 ## Reporting to the Human
 
@@ -121,8 +121,7 @@ When listing sources, please follow these rules:
 
 * When showing local file paths, you must show the *full*, absolute file path.
     * This allows the reader to copy the full and view it in a browser, file explorer, etc.
-* When using Kusto queries or other similar querying systems, *always* produce a browsable URL for the human to click or copy.
-  Link them either directly in your output or as a hyperlink in markdown documents.
+* When using Kusto queries, *always* encode the Kusto query into a `https://dataexplorer.azure.com/` URL and link them (either directly in your output or as a hyperlink in markdown documents).
     * This allows the reader to easily open and execute these queries themselves to view the data.
 
 ## Boundaries
