@@ -50,7 +50,7 @@ class TestInstall(unittest.TestCase):
 
     def test_native_discovery_and_installed_cli_workflow(self) -> None:
         """Discover profiles, resolve links, and run installed scripts."""
-        self.assertIn("--overwrite", self.run_install("--help").stdout)
+        self.assertIn("--no-overwrite", self.run_install("--help").stdout)
         result = self.run_install()
         expected = []
         for target in self.destination.rglob("*"):
@@ -138,31 +138,58 @@ class TestInstall(unittest.TestCase):
         self.assertTrue(Path(case["path"]).is_file())
         self.assertTrue(Path(theory["path"]).is_file())
 
-    def test_rerun_conflict_and_explicit_overwrite(self) -> None:
+    def test_rerun_default_overwrite_and_opt_out(self) -> None:
         """Leave identical and unrelated files alone; preflight conflicts."""
-        self.run_install()
+        initial = self.run_install("--no-overwrite")
+        expected_unchanged = [
+            line.replace("Copied:", "Unchanged:", 1)
+            for line in initial.stdout.splitlines()
+            if line.startswith("Copied:")
+        ]
         target = self.destination / "agents/sleuthbots-coordinator.agent.md"
         original = target.read_bytes()
         before = target.stat().st_mtime_ns
-        for args in ((), ("--overwrite",)):
+        for args in ((), ("--no-overwrite",)):
             result = self.run_install(*args)
             self.assertIn("0 copied, 12 unchanged", result.stdout)
             self.assertNotIn("Copied:", result.stdout)
+            self.assertEqual(
+                result.stdout.splitlines()[:-1], expected_unchanged
+            )
         self.assertEqual(target.stat().st_mtime_ns, before)
         unrelated = self.destination / "skills/keep.txt"
         unrelated.write_text("keep", encoding="utf-8")
         target.write_text("custom", encoding="utf-8")
         missing = self.destination / "skills/sleuth_common.py"
         missing.unlink()
-        self.assertIn("Conflict:", self.run_install(code=1).stderr)
+        failure = self.run_install("--no-overwrite", code=1)
+        self.assertIn("Conflict:", failure.stderr)
+        self.assertIn("omit --no-overwrite", failure.stderr)
         self.assertEqual(target.read_text(encoding="utf-8"), "custom")
         self.assertFalse(missing.exists())
-        result = self.run_install("--overwrite")
+        result = self.run_install()
         self.assertEqual(
-            result.stdout.splitlines()[:-1],
+            [
+                line
+                for line in result.stdout.splitlines()
+                if line.startswith("Copied:")
+            ],
             [
                 f"Copied: {ROOT / 'agents/coordinator.agent.md'} -> {target}",
                 f"Copied: {ROOT / 'skills/sleuth_common.py'} -> {missing}",
+            ],
+        )
+        self.assertIn("2 copied, 10 unchanged", result.stdout)
+        self.assertEqual(
+            [
+                line
+                for line in result.stdout.splitlines()
+                if line.startswith("Unchanged:")
+            ],
+            [
+                line
+                for line in expected_unchanged
+                if not line.endswith((f" -> {target}", f" -> {missing}"))
             ],
         )
         self.assertEqual(target.read_bytes(), original)
@@ -184,10 +211,12 @@ class TestInstall(unittest.TestCase):
         victim = outside / "keep.py"
         victim.write_text("keep", encoding="utf-8")
         target.symlink_to(victim)
-        self.run_install("--overwrite", code=1)
+        for args in ((), ("--no-overwrite",)):
+            self.run_install(*args, code=1)
         target.unlink()
         os.link(victim, target)
-        self.run_install("--overwrite", code=1)
+        for args in ((), ("--no-overwrite",)):
+            self.run_install(*args, code=1)
         self.assertEqual(victim.read_text(encoding="utf-8"), "keep")
 
         source = self.home / "checkout"

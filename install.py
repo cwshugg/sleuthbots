@@ -84,7 +84,7 @@ def payload() -> dict[Path, tuple[Path, bytes]]:
     return files
 
 
-def install(destination: Path, overwrite: bool = False) -> tuple[int, int]:
+def install(destination: Path, overwrite: bool = True) -> tuple[int, int]:
     """Preflight all paths, then copy individual files, never directories."""
     destination = destination.expanduser().absolute()
     check_path(destination, directory=True)
@@ -99,10 +99,12 @@ def install(destination: Path, overwrite: bool = False) -> tuple[int, int]:
         if target.is_file():
             if target.read_bytes() == content:
                 unchanged += 1
+                print(f"Unchanged: {source} -> {target}")
                 continue
             if not overwrite:
                 raise ValueError(
-                    f"Conflict: {target}; use --overwrite to replace this file."
+                    f"Conflict: {target}; omit --no-overwrite to replace "
+                    "this file."
                 )
         pending.append((source, target, content))
 
@@ -136,7 +138,8 @@ def main() -> int:
         description=__doc__,
         epilog=(
             "Installs agents/sleuthbots-*.agent.md and skills/ with their "
-            "shared module. Identical files are left untouched. Restart "
+            "shared module. Differing payload files are replaced by default; "
+            "identical files are left untouched. Never follows links. Restart "
             "Copilot, then use /agent and /skills list. "
             "Use trusted local directories; concurrent installs "
             "are unsupported."
@@ -150,9 +153,10 @@ def main() -> int:
         help="Copilot user directory (default: ~/.copilot)",
     )
     parser.add_argument(
-        "--overwrite",
-        action="store_true",
-        help="replace conflicting payload files only; never follow links",
+        "--no-overwrite",
+        dest="overwrite",
+        action="store_false",
+        help="fail on differing existing payload files instead of replacing",
     )
     args = parser.parse_args()
     try:

@@ -33,6 +33,9 @@ python3 install.py
 python3 -m unittest discover -s tests
 ```
 
+The installer replaces differing bundled files by default and leaves identical files untouched.
+Use `python3 install.py --no-overwrite` to fail on differing existing files instead.
+
 Type `/agent` and select `[Sleuthbots::Coordinator] Skinner`.
 Then, offer up a problem to investigate (an IcM, a bug in your code, etc.).
 Skinner will dispatch the Theorist and the Skeptic to investigate.
