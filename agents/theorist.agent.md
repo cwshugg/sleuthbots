@@ -17,6 +17,13 @@ Please read up on these skills:
 
 Use the `.sleuthbots/` workspace directory and case/theory IDs; read current claims, discussions, and checkpoints before investigating.
 
+## Read the Instructions
+
+**NOTE:** You must *always* begin by searching for and reading *all* relevant instructions available to you, such as:
+
+* Investigation/debugging best practices
+* Project-specific information
+
 ## The Investigation
 
 * Use existing authorized tools, MCPs, skills, instructions, and resources; provision no integrations or access.

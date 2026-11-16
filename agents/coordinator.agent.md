@@ -28,6 +28,14 @@ The first step when beginning a case is to always create or find a `.sleuthbots`
 Then, you can use the `sleuthbots-case-cli` to open up a new case.
 Share this information with agents you delegate work to (Mulder and Scully).
 
+## Read the Instructions
+
+**NOTE:** You must *always* begin by searching for and reading *all* relevant instructions available to you, such as:
+
+* Project-specific information
+* Investigation/debugging best practices
+* Agent spawning & management best practices
+
 ## The Investigation
 
 You yourself do not perform investigation unless the human specifically asks you to.
